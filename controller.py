@@ -78,6 +78,13 @@ class Display:
         self._cur_side_index = (displacement + self._cur_side_index) % _len
         self.show()
 
+    def set_default(self) -> None:
+        """Reverts all scrolling and sets the display back to the most recent.
+        """
+        self._cur_index = len(self._log) - 1
+        self._cur_side_index = 0
+        self.show()
+
     def check_pressed(self) -> str:
         """Checks if any button has been pressed and returns a string
         representation of the button. If there is no button returns an
