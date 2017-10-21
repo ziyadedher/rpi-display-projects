@@ -7,4 +7,4 @@ A list of small projects that control and do cool stuff with a Raspberry Pi 3 co
 
 ## Projects ##
  
- * `display.py`: displays information on the screen on demand. Can be used interactively through the command line, or immediately through the command line.
+ * `writer.py`: displays information on the screen on demand. Can be used interactively through the command line, or immediately through the command line.
