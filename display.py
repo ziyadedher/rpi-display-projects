@@ -5,6 +5,7 @@ Can be used interactively or one-time through the command line.
 from typing import List
 
 import sys
+import time
 import controller
 
 
@@ -16,12 +17,16 @@ class Writer:
     #   the lcd display controller
     # _input:
     #   the input controller
+    # _delay:
+    #   buffer time until accepting a new button press
+    #   after receiving one
 
-    def __init__(self) -> None:
+    def __init__(self, delay = 0.1) -> None:
         """Initializes the writer.
         """
         self._display = controller.Display()
         self._input = controller.Input()
+        self._delay = delay
         
     def end(self) -> None:
         """Ends the writer.
@@ -33,6 +38,27 @@ class Writer:
         """
         for line in lines:
             self._display.write(line)
+
+    def _check_plate_input(self) -> None:
+        """Checks plate input and reacts accordingly by scrolling
+        or other functionality.
+        """
+        button = self._display.check_pressed()
+        if button == "":
+            return
+        elif button == "select":
+            pass
+        elif button == "left":
+            pass
+        elif button == "up":
+            self._display.scroll(-1)
+            time.sleep(self._delay)
+        elif button == "down":
+            self._display.scroll(1)
+            time.sleep(self._delay)
+        elif button == "right":
+            pass
+
 
     def start_interactive(self, num_inputs: int = 0,
                                 stop_keyword: str = "__END__") -> None:
@@ -66,6 +92,8 @@ class Writer:
                 # Other
                 else:
                     message += read
+
+                self._check_plate_input()
 
         except KeyboardInterrupt:
             self.end()

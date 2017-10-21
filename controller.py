@@ -59,8 +59,24 @@ class Display:
         """Scrolls through the log by <displacement>.
         Negative upwards, positive downwards.
         """
-        self._cur_index = (displacement + self._cur_index) % len(_log)
+        self._cur_index = (displacement + self._cur_index) % len(self._log)
         self.show()
+
+    def check_pressed(self) -> str:
+        """Checks if any button has been pressed and returns a string
+        representation of the button. If there is no button returns an
+        empty string.
+        """
+        buttons = ((LCD.SELECT, "select"),
+                   (LCD.LEFT,   "left"  ),
+                   (LCD.UP,     "up"    ),
+                   (LCD.DOWN,   "down"  ),
+                   (LCD.RIGHT,  "right" ))
+        
+        for button in buttons:
+            if self._lcd.is_pressed(button[0]):
+                return button[1]
+        return ""
 
 
 class Input:
