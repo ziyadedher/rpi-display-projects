@@ -6,4 +6,5 @@ A list of small projects that control and do cool stuff with a Raspberry Pi 3 co
  * `controller.py`: controls all basic functionality of information display on the Pi.
 
 ## Projects ##
-**Currently empty.**
+ 
+ * `display.py`: displays information on the screen on demand. Can be used interactively through the command line, or immediately through the command line.
