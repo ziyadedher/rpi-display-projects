@@ -17,18 +17,16 @@ class Display:
     #   list of all strings displayed
     # _cur_index:
     #   where we are currently displaying in the log
-    # _scrollable:
-    #   boolean that dictates whether or not you can scroll through
-    #   previous logs
+    # _cur_side_index:
+    #   where we are currently in each line
 
-    def __init__(self, initializers: Tuple[str, str] = ("", ""),
-                       scrollable = False) -> None:
+    def __init__(self, initializers: Tuple[str, str] = ("", "")) -> None:
         """Initializes the display.
         """
         self._lcd = LCD.Adafruit_CharLCDPlate()
         self._log = list(initializers)
         self._cur_index = 1
-        self._scrollable = scrollable
+        self._cur_side_index = 0
         self.clear()
 
     def clear(self) -> None:
@@ -42,15 +40,24 @@ class Display:
         self._lcd.message(line1 + "\n" + line2)
 
     def show(self) -> None:
-        """Shows the most recent two messages from <_log>.
+        """Shows the current messages from <_log>.
         """
         self.clear()
-        self._put(self._log[self._cur_index - 1], self._log[self._cur_index])
+        line1 = self._log[self._cur_index - 1]
+        line2 = self._log[self._cur_index]
+        self._put(line1[self._cur_side_index:] + line1[:self._cur_side_index],
+                  line2[self._cur_side_index:] + line2[:self._cur_side_index])
 
     def write(self, message: str) -> None:
         """Displays <message> at the bottom of the screen and appends
         it to <_log>.
         """
+        # Pads the message with spaces if it is less than 16 chars
+        # then adds an extra two spaces of padding
+        while len(message) < 16:
+            message += " "
+        message += "  "
+
         self._log.append(message)
         self._cur_index += 1
         self.show()
@@ -60,6 +67,15 @@ class Display:
         Negative upwards, positive downwards.
         """
         self._cur_index = (displacement + self._cur_index) % len(self._log)
+        self.show()
+
+    def side_scroll(self, displacement: int) -> None:
+        """Scrolls through the all the log horizontally by <displacement>.
+        Negative left, positive right.
+        """
+        _len = max(len(self._log[self._cur_index - 1]),
+                   len(self._log[self._cur_index]))
+        self._cur_side_index = (displacement + self._cur_side_index) % _len
         self.show()
 
     def check_pressed(self) -> str:

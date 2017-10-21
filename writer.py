@@ -49,7 +49,8 @@ class Writer:
         elif button == "select":
             pass
         elif button == "left":
-            pass
+            self._display.side_scroll(1)
+            time.sleep(self._delay)
         elif button == "up":
             self._display.scroll(-1)
             time.sleep(self._delay)
@@ -57,7 +58,8 @@ class Writer:
             self._display.scroll(1)
             time.sleep(self._delay)
         elif button == "right":
-            pass
+            self._display.side_scroll(-1)
+            time.sleep(self._delay)
 
 
     def start_interactive(self, num_inputs: int = 0,
