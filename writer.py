@@ -58,7 +58,6 @@ class Writer:
             self._display.side_scroll(-1)
         time.sleep(self._delay)
 
-
     def start_interactive(self, num_inputs: int = 0,
                                 stop_keyword: str = "__END__") -> None:
         """Begins the interactive display.
@@ -98,11 +97,36 @@ class Writer:
             self.end()
             sys.exit()
 
+    def start_headless(self, buf: List[str]) -> None:
+        """Begins a headless version of the interactive display.
+
+        Instead of waiting for user input, gets input from <buf> and displays
+        whatever is in that.
+        """
+        # Stop the curses module
+        self.end()
+
+        while True:
+            if len(buf) > 0:
+                # Print out the messages to terminal
+                for msg in buf:
+                    print(msg)
+
+                # Show the messages on the display and remove from buffer
+                self.show(buf)
+                while len(buf) > 0:
+                    buf.pop()
+
+            self._check_plate_input()
+
 
 if __name__ == "__main__":
     writer = Writer()
     if len(sys.argv) > 1:
-        writer.show(sys.argv[1:])
+        if sys.argv[1] == "--headless":
+            writer.start_headless(sys.argv[2:])
+        else:
+            writer.show(sys.argv[1:])
     else:
         writer.start_interactive()
     writer.end()

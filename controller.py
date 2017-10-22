@@ -40,7 +40,7 @@ class Display:
         self._lcd.message(line1 + "\n" + line2)
 
     def show(self) -> None:
-        """Shows the current messages from <_log>.
+        """Shows the current messages from the log.
         """
         self.clear()
         line1 = self._log[self._cur_index - 1]
