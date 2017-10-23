@@ -1,4 +1,4 @@
-"""Displays text as is on the LCD 16x2 display.
+"""Displays text as is on the display.
 
 Can be used interactively or one-time through the command line.
 """
@@ -19,7 +19,7 @@ class Writer:
     #   buffer time until accepting a new button press
     #   after receiving one
 
-    def __init__(self, delay = 0.1) -> None:
+    def __init__(self, delay: int = 0.1) -> None:
         """Initializes the writer.
         """
         self._display = controller.Display()

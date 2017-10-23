@@ -1,4 +1,4 @@
-"""Controls all basic functionality of the Raspberry Pi screen
+"""Controls all basic functionality of the Raspberry Pi 3
 like initialization, information display, and input.
 """
 from typing import Tuple
@@ -8,7 +8,7 @@ import Adafruit_CharLCD as LCD
 
 
 class Display:
-    """Manages all display functionality.
+    """Manages all display functionality regarding the 16x2 LCD display.
     """
     # === Private Attributes ===
     # _lcd:
