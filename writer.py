@@ -15,8 +15,6 @@ class Writer:
     # === Private Attributes ===
     # _display:
     #   the lcd display controller
-    # _input:
-    #   the input controller
     # _delay:
     #   buffer time until accepting a new button press
     #   after receiving one
@@ -25,13 +23,7 @@ class Writer:
         """Initializes the writer.
         """
         self._display = controller.Display()
-        self._input = controller.Input()
         self._delay = delay
-        
-    def end(self) -> None:
-        """Ends the writer.
-        """
-        self._input.stop()
 
     def show(self, lines: List[str]) -> None:
         """Shows the list <lines> to screen in order.
@@ -67,9 +59,10 @@ class Writer:
         """
         num = 0
         message = ""
-        try:
+
+        with controller.Input() as _input:
             while num_inputs == 0 or num < num_inputs:
-                read = self._input.read()
+                read = _input.read()
                 
                 # No input
                 if read == '':
@@ -82,8 +75,12 @@ class Writer:
                 # Enter
                 elif read == '\n':
                     num += 1
+
+                    # Raise an error to stop the interactivity if
+                    # the stop keyword was typed
                     if message == stop_keyword:
                         raise KeyboardInterrupt
+
                     self.show([message])
                     message = ""
                 
@@ -93,19 +90,12 @@ class Writer:
 
                 self._check_plate_input()
 
-        except KeyboardInterrupt:
-            self.end()
-            sys.exit()
-
     def start_headless(self, buf: List[str]) -> None:
         """Begins a headless version of the interactive display.
 
         Instead of waiting for user input, gets input from <buf> and displays
         whatever is in that.
         """
-        # Stop the curses module
-        self.end()
-
         while True:
             if len(buf) > 0:
                 # Print out the messages to terminal
@@ -121,12 +111,21 @@ class Writer:
 
 
 if __name__ == "__main__":
+    # Initializes a new writer when the module is called
     writer = Writer()
+
+    # Checks if there are any arguments (other than the file itself)
     if len(sys.argv) > 1:
+        # If the first real argument is the headless tag,
+        # run the Writer headlessly with the list coming
+        # after the headless tag
         if sys.argv[1] == "--headless":
             writer.start_headless(sys.argv[2:])
+        # Otherwise just show whatever the arguments were
         else:
             writer.show(sys.argv[1:])
+
+    # If there are no real arguments,
+    # then just start the writer interactively
     else:
         writer.start_interactive()
-    writer.end()

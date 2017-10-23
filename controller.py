@@ -107,10 +107,29 @@ class Input:
     """
     # === Private Attributes ===
     # _window:
-    #   the curses window
+    #   the curses window, only initialized when <start> is called
 
-    def __init__(self) -> None:
-        """Initializes the input structure.
+    def __enter__(self) -> 'Input':
+        """Called when using the <with-as> syntax.
+
+        Starts the input manager and returns the started instance.
+        """
+        self.start()
+        return self
+
+    def __exit__(self, exc_type, exc_value, traceback) -> None:
+        """Called when exiting the <with-as> syntax.
+        
+        Used to catch errors and make sure the console is not
+        going to messed up by curses.
+
+        Swallows the error if it is a KeyboardInterrupt
+        """
+        self.stop()
+        return exc_type == KeyboardInterrupt
+
+    def start(self) -> None:
+        """Starts the input structure.
         """
         self._window = curses.initscr()
         curses.noecho()
