@@ -5,6 +5,7 @@ from typing import Tuple
 
 import curses
 import Adafruit_CharLCD as LCD
+import time
 
 
 class Display:
@@ -29,6 +30,8 @@ class Display:
         self._cur_side_index = 0
         self.clear()
         self.show()
+        self._delay = 0.5 #delay = CONTROLS THE SPEED OF SCROLL
+
 
     def clear(self) -> None:
         """Clears the display.
@@ -41,22 +44,40 @@ class Display:
         return (self._log[self._cur_index - 1].rstrip(),
                 self._log[self._cur_index].rstrip())
 
-    def _put(self, line1: str, line2: str) -> None:
-        """Puts each line onto the screen.
+    def _put(self, message, rep=False) -> None:
+        """Puts message onto the screen.
         """
-        print("Line1: " + line1)
-        print("Line2: " + line2)
-        self._lcd.message(line1 + "\n" + line2)
+        self.clear() # clear before display message
+        REPETITIONS = 1 # change how many times to repeat message
+
+        if rep: REPETITIONS = rep
+
+        n = 16
+        rows = [message[i:i + n] for i in range(0, len(message), n)]
+        n_rows = len(rows)
+        for i in range(REPETITIONS):
+            for x in range(n_rows):
+                self._lcd.home()
+                self.clear()
+                nxt = x + 1
+                self._lcd.message(rows[x] + "\n")
+                if nxt == n_rows:
+                    time.sleep(1) #delay 1 sec after finnish display message
+                    break
+                else:
+                    self._lcd.message(rows[nxt])
+                    time.sleep(self._delay)
 
     def show(self) -> None:
         """Shows the current messages from the log.
         """
-        # TODO: Fix displaying long messages (>40 chars including padding)
-        self.clear()
+        self._lcd.begin(16,2)
+
         line1 = self._log[self._cur_index - 1]
         line2 = self._log[self._cur_index]
-        self._put(line1[self._cur_side_index:] + line1[:self._cur_side_index],
-                  line2[self._cur_side_index:] + line2[:self._cur_side_index])
+
+        self._put(line1)
+        self._put(line2)
 
     def write(self, message: str) -> None:
         """Displays <message> at the bottom of the screen and appends
