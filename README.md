@@ -8,3 +8,4 @@ A list of small projects that control and do cool stuff with a Raspberry Pi 3 co
 ## Projects ##
  
  * `writer.py`: displays information on the screen on demand. Can be used interactively through the command line, interactively through a buffer, or immediately through the command line.
+ * `reddit.py`: displays the top posts of a certain subreddit.

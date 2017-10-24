@@ -51,7 +51,7 @@ class Display:
     def show(self) -> None:
         """Shows the current messages from the log.
         """
-        # TODO: Fix displaying long messages
+        # TODO: Fix displaying long messages (>40 chars including padding)
         self.clear()
         line1 = self._log[self._cur_index - 1]
         line2 = self._log[self._cur_index]
