@@ -28,20 +28,30 @@ class Display:
         self._cur_index = 1
         self._cur_side_index = 0
         self.clear()
+        self.show()
 
     def clear(self) -> None:
         """Clears the display.
         """
         self._lcd.clear()
 
+    def get_on_screen(self) -> Tuple[str, str]:
+        """Returns a tuple of the currently on-screen strings.
+        """
+        return (self._log[self._cur_index - 1].rstrip(),
+                self._log[self._cur_index].rstrip())
+
     def _put(self, line1: str, line2: str) -> None:
         """Puts each line onto the screen.
         """
+        print("Line1: " + line1)
+        print("Line2: " + line2)
         self._lcd.message(line1 + "\n" + line2)
 
     def show(self) -> None:
         """Shows the current messages from the log.
         """
+        # TODO: Fix displaying long messages
         self.clear()
         line1 = self._log[self._cur_index - 1]
         line2 = self._log[self._cur_index]
