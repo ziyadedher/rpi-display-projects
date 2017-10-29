@@ -44,14 +44,11 @@ class Display:
     def _put(self, line1: str, line2: str) -> None:
         """Puts each line onto the screen.
         """
-        print("Line1: " + line1)
-        print("Line2: " + line2)
         self._lcd.message(line1 + "\n" + line2)
 
     def show(self) -> None:
         """Shows the current messages from the log.
         """
-        # TODO: Fix displaying long messages (>40 chars including padding)
         self.clear()
         line1 = self._log[self._cur_index - 1]
         line2 = self._log[self._cur_index]
@@ -62,14 +59,26 @@ class Display:
         """Displays <message> at the bottom of the screen and appends
         it to <_log>.
         """
-        # Pads the message with spaces if it is less than 16 chars
-        # then adds an extra two spaces of padding
-        while len(message) < 16:
-            message += " "
-        message += "  "
+        # Splits up the message into equal parts
+        message_parts = []
+        num_message_parts = (len(message) // 39) + 1
+        part_length = len(message) // num_message_parts
+        for i in range(num_message_parts):
+            if i == num_message_parts - 1:
+                message_parts.append(message[i * part_length:])
+                break
+            message_parts.append(message[i * part_length:(i + 1) * part_length])
+        
+        # Shows each part
+        for message_part in message_parts:
+            # Pads the message with spaces if it less than 16 chars
+            # then adds an extra two spaces of padding
+            while len(message_part) < 16:
+                message_part += " "
+            message_part += "  "
 
-        self._log.append(message)
-        self._cur_index += 1
+            self._log.append(message_part)
+            self._cur_index += 1
         self.show()
 
     def scroll(self, displacement: int) -> None:
