@@ -78,7 +78,7 @@ class RedditView:
         """Returns a list of the top <num> titles.
         """
         return [submission.title for submission
-                in self._scraper.scrape(self._subreddit, self._category, 1)]
+                in self._scraper.scrape(self._subreddit, self._category, num)]
 
 
     def start_polling(self) -> None:
@@ -86,17 +86,13 @@ class RedditView:
         top post changed.
         """
         while True:
-            print("Polling reddit...")
-
-            title = self._poll_titles(1)[0].strip('\n')
-            if title != self._display.get_on_screen()[1]:
-                self._display.write(title)
-                print("Found new content.\n" + title)
-            else:
-                print("No new content found.")
+            titles = self._poll_titles(2)
+            for i in range(len(titles)):
+                titles[i] = titles[i].strip('\n')
+                if titles[i] != self._display.get_on_screen()[-i]:
+                    self._display.write(titles[i])
 
             time.sleep(self._polling_interval)
-            print("")
 
 
 if __name__ == "__main__":
